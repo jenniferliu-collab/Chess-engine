@@ -22,9 +22,9 @@ def stream_pgn_from_lichess(url: str):
     with requests.get(url, stream=True) as response:
         response.raise_for_status()
         
-        # zstd needs a file-like object — wrap the raw stream
+        # zstd needs a file-like object, wrap the raw stream
         with dctx.stream_reader(response.raw) as reader:
-            # chess.pgn.read_game() needs a text stream, not bytes
+            # chess.pgn.read_game() needs a text stream and not bytes
             text_stream = io.TextIOWrapper(reader, encoding="utf-8")
             yield text_stream  # yield the whole stream object
 
@@ -75,7 +75,7 @@ def result_to_label(result: str):
         return -1.0
     elif result == "1/2-1/2":
         return 0.0
-    return None  # "*" means game was abandoned — skip it
+    return None  # skips abandoned (*) games
 
 
 # 4. Build the dataset 
